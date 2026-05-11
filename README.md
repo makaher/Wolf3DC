@@ -1,6 +1,6 @@
 # Wolf3DC - Wolfenstein 3D Borland C IDE Emulator
 
-**A modern IDE frontend for compiling Wolfenstein 3D source code using DJGPP/Open Watcom compilers.**
+**A modern IDE frontend fogr compiling Wolfenstein 3D source code using DJGPP/Open Watcom compilers.**
 
 ## Overview
 
