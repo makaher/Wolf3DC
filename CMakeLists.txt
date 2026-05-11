@@ -14,6 +14,7 @@ set(SOURCES
     src/compiler_pipeline.cpp
     src/ide_interface.cpp
     src/logger.cpp
+    src/simple_c_compiler.cpp
 )
 
 # Headers
@@ -23,6 +24,7 @@ set(HEADERS
     src/compiler_pipeline.h
     src/ide_interface.h
     src/logger.h
+    src/simple_c_compiler.h
 )
 
 # Create executable
