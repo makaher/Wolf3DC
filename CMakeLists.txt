@@ -13,6 +13,7 @@ set(SOURCES
     src/project_manager.cpp
     src/compiler_pipeline.cpp
     src/ide_interface.cpp
+    src/logger.cpp
 )
 
 # Headers
@@ -21,6 +22,7 @@ set(HEADERS
     src/project_manager.h
     src/compiler_pipeline.h
     src/ide_interface.h
+    src/logger.h
 )
 
 # Create executable

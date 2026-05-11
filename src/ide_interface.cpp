@@ -1,4 +1,5 @@
 #include "ide_interface.h"
+#include "logger.h"
 #include "ui.h"
 #include <iostream>
 #include <iomanip>
@@ -10,6 +11,7 @@ IDEInterface::IDEInterface() : running(false) {}
 IDEInterface::~IDEInterface() {}
 
 bool IDEInterface::initialize() {
+    Logger::getInstance().info("Initializing IDE...");
     return compiler.initialize();
 }
 
@@ -23,15 +25,15 @@ void IDEInterface::clearScreen() {
 
 void IDEInterface::printHeader() {
     clearScreen();
-    std::cout << "╔════════════════════════════════════════════════════════════════╗" << std::endl;
-    std::cout << "║     WOLF3DC - Wolfenstein 3D Borland C IDE Emulator v1.0      ║" << std::endl;
-    std::cout << "║                    DOS Compiler Frontend                        ║" << std::endl;
-    std::cout << "╚════════════════════════════════════════════════════════════════╝" << std::endl;
+    std::cout << "╔═══════════════════════════════════════════════════════════════╗" << std::endl;
+    std::cout << "║     Wolf3DC IDE - Wolfenstein 3D Development Environment      ║" << std::endl;
+    std::cout << "║                          v1.0                                 ║" << std::endl;
+    std::cout << "╚═══════════════════════════════════════════════════════════════╝" << std::endl;
     std::cout << std::endl;
 }
 
 void IDEInterface::printFooter() {
-    std::cout << std::endl << "────────────────────────────────────────────────────────────────" << std::endl;
+    std::cout << std::endl << "───────────────────────────────────────────────────────────────" << std::endl;
 }
 
 void IDEInterface::printMenu() {
@@ -74,8 +76,10 @@ void IDEInterface::handleNewProject() {
     if (projectManager.createNewProject(projName, projPath)) {
         std::cout << "[+] Project created successfully!" << std::endl;
         projectManager.saveProject();
+        Logger::getInstance().info("Project created: " + projName);
     } else {
         std::cout << "[-] Failed to create project." << std::endl;
+        Logger::getInstance().error("Failed to create project: " + projName);
     }
     
     std::cout << "\nPress Enter to continue...";
@@ -92,8 +96,10 @@ void IDEInterface::handleOpenProject() {
     
     if (projectManager.loadProject(prjPath)) {
         std::cout << "[+] Project loaded: " << projectManager.getProjectName() << std::endl;
+        Logger::getInstance().info("Project opened: " + prjPath);
     } else {
         std::cout << "[-] Failed to open project." << std::endl;
+        Logger::getInstance().error("Failed to open project: " + prjPath);
     }
     
     std::cout << "\nPress Enter to continue...";
@@ -110,8 +116,10 @@ void IDEInterface::handleAddFile() {
     
     if (projectManager.addSourceFile(filePath)) {
         std::cout << "[+] File added successfully!" << std::endl;
+        Logger::getInstance().info("File added: " + filePath);
     } else {
         std::cout << "[-] Invalid file type. Use .C or .ASM" << std::endl;
+        Logger::getInstance().warning("Invalid file type: " + filePath);
     }
     
     std::cout << "\nPress Enter to continue...";
@@ -125,6 +133,7 @@ void IDEInterface::handleCompile() {
     auto sourceFiles = projectManager.getSourceFiles();
     if (sourceFiles.empty()) {
         std::cout << "[-] No source files in project." << std::endl;
+        Logger::getInstance().warning("Compile attempted with no source files");
         std::cout << "\nPress Enter to continue...";
         std::cin.ignore();
         return;
@@ -138,16 +147,19 @@ void IDEInterface::handleCompile() {
     opts.generateDebugInfo = projectManager.getSettings().debugInfo;
     
     std::cout << "Compiling " << sourceFiles.size() << " file(s)..." << std::endl << std::endl;
+    Logger::getInstance().info("Starting compilation of " + std::to_string(sourceFiles.size()) + " files");
     
     auto result = compiler.compile(sourceFiles, opts);
     
     if (result.success) {
         std::cout << std::endl << "[+] Compilation successful!" << std::endl;
         std::cout << "Output: " << result.executablePath << std::endl;
+        Logger::getInstance().info("Compilation successful: " + result.executablePath);
     } else {
         std::cout << std::endl << "[-] Compilation failed!" << std::endl;
         if (!result.errorLog.empty()) {
             std::cout << "Error: " << result.errorLog << std::endl;
+            Logger::getInstance().error("Compilation failed: " + result.errorLog);
         }
     }
     
@@ -161,10 +173,12 @@ void IDEInterface::handleRun() {
     
     std::string exePath = projectManager.getOutputFile();
     std::cout << "Running: " << exePath << std::endl << std::endl;
+    Logger::getInstance().info("Running program: " + exePath);
     
     int result = system(exePath.c_str());
     
     std::cout << std::endl << "Program exited with code: " << result << std::endl;
+    Logger::getInstance().info("Program exited with code: " + std::to_string(result));
     std::cout << "\nPress Enter to continue...";
     std::cin.ignore();
 }
@@ -194,7 +208,7 @@ void IDEInterface::run() {
         std::cout << "Command: ";
         char cmd;
         std::cin >> cmd;
-        std::cin.ignore(); // Clear newline from input buffer
+        std::cin.ignore();
         
         switch (std::tolower(cmd)) {
             case 'n':
@@ -217,7 +231,7 @@ void IDEInterface::run() {
                 break;
             case 'h':
                 clearScreen();
-                std::cout << "Help - Wolfenstein 3D IDE" << std::endl << std::endl;
+                std::cout << "Help - Wolf3DC IDE" << std::endl << std::endl;
                 std::cout << "Commands:" << std::endl;
                 std::cout << "  N - Create a new W3D project" << std::endl;
                 std::cout << "  O - Open an existing .PRJ file" << std::endl;
