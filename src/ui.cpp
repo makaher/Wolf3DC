@@ -13,7 +13,7 @@
 void UI::printHeader() {
     clearScreen();
     printSeparator('=', 70);
-    printColored(centerText("W3D COMPILER - Wolfenstein 3D C to C++ Compiler", 70), Color::CYAN);
+    printColored(centerText("Wolf3DC IDE", 70), Color::CYAN);
     printColored(centerText("Version 1.0", 70), Color::CYAN);
     printSeparator('=', 70);
     std::cout << std::endl;
